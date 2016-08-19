@@ -78,6 +78,7 @@ func (s *StepCreateInstance) Run(state multistep.StateBag) multistep.StepAction 
 		Name:                name,
 		Network:             config.Network,
 		OmitExternalIP:      config.OmitExternalIP,
+ 		OnHostMaintenance:   config.OnHostMaintenance,
 		Preemptible:         config.Preemptible,
 		Region:              config.Region,
 		ServiceAccountEmail: config.Account.ClientEmail,

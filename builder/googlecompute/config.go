@@ -38,6 +38,7 @@ type Config struct {
 	Metadata             map[string]string `mapstructure:"metadata"`
 	Network              string            `mapstructure:"network"`
 	OmitExternalIP       bool              `mapstructure:"omit_external_ip"`
+	OnHostMaintenance    string            `mapstructure:"on_host_maintenance"`
 	Preemptible          bool              `mapstructure:"preemptible"`
 	RawStateTimeout      string            `mapstructure:"state_timeout"`
 	Region               string            `mapstructure:"region"`
@@ -168,6 +169,10 @@ func NewConfig(raws ...interface{}) (*Config, []string, error) {
 		}
 	}
 
+	if c.OnHostMaintenance == "" {
+		c.OnHostMaintenance = "MIGRATE"
+	}
+	
 	if c.OmitExternalIP && c.Address != "" {
 		errs = packer.MultiErrorAppend(fmt.Errorf("you can not specify an external address when 'omit_external_ip' is true"))
 	}

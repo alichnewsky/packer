@@ -316,6 +316,7 @@ func (d *driverGCE) RunInstance(c *InstanceConfig) (<-chan error, error) {
 			},
 		},
 		Scheduling: &compute.Scheduling{
+			OnHostMaintenance: c.OnHostMaintenance,
 			Preemptible: c.Preemptible,
 		},
 		ServiceAccounts: []*compute.ServiceAccount{
