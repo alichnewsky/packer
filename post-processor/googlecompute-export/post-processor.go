@@ -81,15 +81,19 @@ func (p *PostProcessor) PostProcess(ui packer.Ui, artifact packer.Artifact) (pac
 			RawStateTimeout:      "5m",
 		}
 		exporterConfig.CalcTimeout()
-		
-		// Set up credentials and GCE driver.
-		b, err := ioutil.ReadFile(accountKeyFilePath)
-		if err != nil {
-			err = fmt.Errorf("Error fetching account credentials: %s", err)
-			return nil, p.config.KeepOriginalImage, err
+
+		if accountKeyFilePath != "" {
+			// Set up credentials if they exist
+			b, err := ioutil.ReadFile(accountKeyFilePath)
+			if err != nil {
+				err = fmt.Errorf("Error fetching account credentials: %s", err)
+				return nil, p.config.KeepOriginalImage, err
+			}
+			accountKeyContents := string(b)
+			googlecompute.ProcessAccountFile(&exporterConfig.Account, accountKeyContents)
 		}
-		accountKeyContents := string(b)
-		googlecompute.ProcessAccountFile(&exporterConfig.Account, accountKeyContents)
+		// otherwise, default service account.
+		
 		driver, err := googlecompute.NewDriverGCE(ui, projectId, &exporterConfig.Account)
 		if err != nil {
 			return nil, p.config.KeepOriginalImage, err
