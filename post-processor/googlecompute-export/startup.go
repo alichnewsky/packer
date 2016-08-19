@@ -29,13 +29,13 @@ echo "Export paths - ${PATHS}"
 echo "####################################"
 
 echo "Creating disk from image to be exported..."
-if ! gcloud compute disks create ${DISKNAME} --image ${IMAGENAME} --zone ${ZONE}; then
+if ! gcloud -q compute disks create ${DISKNAME} --image ${IMAGENAME} --zone ${ZONE}; then
   echo "Failed to create disk."
   Exit 1
 fi
 
 echo "Attaching disk..."
-if ! gcloud compute instances attach-disk ${NAME} --disk ${DISKNAME} --device-name toexport --zone ${ZONE}; then
+if ! gcloud -q compute instances attach-disk ${NAME} --disk ${DISKNAME} --device-name toexport --zone ${ZONE}; then
   echo "Failed to attach disk."
   Exit 1
 fi
@@ -53,13 +53,13 @@ if ! tar -czf root.tar.gz disk.raw; then
 fi
 
 echo "Detaching disk..."
-if ! gcloud compute instances detach-disk ${NAME} --disk ${DISKNAME} --zone ${ZONE}; then
+if ! gcloud -q compute instances detach-disk ${NAME} --disk ${DISKNAME} --zone ${ZONE}; then
   echo "Failed to detach disk."
 fi
 
 FAIL=0
 echo "Deleting disk..."
-if ! gcloud compute disks delete ${DISKNAME} --zone ${ZONE}; then
+if ! gcloud -q compute disks delete ${DISKNAME} --zone ${ZONE}; then
   echo "Failed to delete disk."
   FAIL=1
 fi
